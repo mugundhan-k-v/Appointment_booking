@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Booked Appointments</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+<h2>Booked Appointments</h2>
+
+<div id="appointmentsContainer" class="appointments-container"></div>
+
+<script>
+// Retrieve booked appointments from local storage
+const appointments = JSON.parse(localStorage.getItem('appointments'));
+
+// Function to delete an appointment
+function deleteAppointment(appointmentNumber) {
+  // Retrieve existing appointments from local storage
+  const existingAppointments = JSON.parse(localStorage.getItem('appointments')) || [];
+  
+  // Find index of appointment to delete
+  const indexToDelete = existingAppointments.findIndex(appointment => appointment.appointmentNumber === appointmentNumber);
+  
+  // Remove appointment from array
+  if (indexToDelete !== -1) {
+    existingAppointments.splice(indexToDelete, 1);
+    
+    // Update local storage
+    localStorage.setItem('appointments', JSON.stringify(existingAppointments));
+    
+    // Re-render appointments
+    renderAppointments();
+  }
+}
+
+// Function to render appointments on the page
+function renderAppointments() {
+  const appointmentsContainer = document.getElementById('appointmentsContainer');
+  appointmentsContainer.innerHTML = ''; // Clear previous content
+  
+  // Check if appointments exist
+  if (appointments && appointments.length > 0) {
+    let row;
+    appointments.forEach((appointment, index) => {
+      if (index % 3 === 0) {
+        row = document.createElement('div');
+        row.classList.add('appointments-row');
+        appointmentsContainer.appendChild(row);
+      }
+
+      const appointmentDiv = document.createElement('div');
+      appointmentDiv.classList.add('appointment');
+
+      const appointmentNumberPara = document.createElement('p');
+      appointmentNumberPara.textContent = `Appointment Number: ${appointment.appointmentNumber}`;
+
+      const namePara = document.createElement('p');
+      namePara.textContent = `Name: ${appointment.name}`;
+
+      const emailPara = document.createElement('p');
+      emailPara.textContent = `Email: ${appointment.email}`;
+
+      const datePara = document.createElement('p');
+      datePara.textContent = `Date: ${appointment.date}`;
+
+      const timePara = document.createElement('p');
+      timePara.textContent = `Time: ${appointment.time}`;
+
+      const deleteButton = document.createElement('button');
+      deleteButton.textContent = 'Delete';
+      deleteButton.addEventListener('click', function() {
+        deleteAppointment(appointment.appointmentNumber);
+      });
+
+      appointmentDiv.appendChild(appointmentNumberPara);
+      appointmentDiv.appendChild(namePara);
+      appointmentDiv.appendChild(emailPara);
+      appointmentDiv.appendChild(datePara);
+      appointmentDiv.appendChild(timePara);
+      appointmentDiv.appendChild(deleteButton);
+
+      row.appendChild(appointmentDiv);
+    });
+  } else {
+    appointmentsContainer.textContent = "No appointments booked yet.";
+  }
+}
+
+// Render appointments when the page loads
+renderAppointments();
+</script>
+
+</body>
+</html>

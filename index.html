@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="style.css">
+<title>Appointment Booking Form</title>
+</head>
+<body>
+<h2>Appointment Booking Form</h2>
+<form id="appointmentForm">
+  <label for="name">Name:</label><br>
+  <input type="text" id="name" name="name" required><br>
+  
+  <label for="email">Email:</label><br>
+  <input type="email" id="email" name="email" required><br>
+  
+  <label for="date">Date:</label><br>
+  <input type="date" id="date" name="date" required><br>
+  
+  <label for="time">Time:</label><br>
+  <input type="time" id="time" name="time" required><br>
+  
+  <input type="submit" value="Submit">
+</form>
+
+<script>
+document.getElementById('appointmentForm').addEventListener('submit', function(event) {
+  event.preventDefault(); // prevent form submission
+  
+  // Get form data
+  const formData = {
+    name: document.getElementById('name').value,
+    email: document.getElementById('email').value,
+    date: document.getElementById('date').value,
+    time: document.getElementById('time').value
+  };
+
+  // Retrieve existing appointments from local storage
+  const existingAppointments = JSON.parse(localStorage.getItem('appointments')) || [];
+  
+  // Generate appointment number
+  const appointmentNumber = AppointmentNumber(existingAppointments.length + 1);
+  
+  // Add new appointment to existing appointments
+  existingAppointments.push({
+    appointmentNumber: appointmentNumber,
+    ...formData
+  });
+  
+  // Store updated appointments in local storage
+  localStorage.setItem('appointments', JSON.stringify(existingAppointments));
+
+  // Clear form fields
+  document.getElementById('name').value = '';
+  document.getElementById('email').value = '';
+  document.getElementById('date').value = '';
+  document.getElementById('time').value = '';
+
+  // Alert user that the appointment has been booked
+  alert('Appointment booked successfully!');
+
+});
+
+// Function to generate appointment number
+function AppointmentNumber(appointmentIndex) {
+  return appointmentIndex;
+}
+</script>
+
+</body>
+</html>
